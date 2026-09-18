@@ -22,7 +22,14 @@ class FDICClientError(RuntimeError):
     how to parse."""
     pass
 
-
+def extract_records(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    if "data" in payload:
+        data = payload["data"]
+        if data and isinstance(data[0], dict) and "data" in data[0]:
+            return [record["data"] for record in data]
+        else:
+            return []
+ 
 
 def fetch_all(
     endpoint: str,
@@ -49,6 +56,7 @@ def fetch_all(
         if max_records is not None:
             limit = min(page_size, max_records - len(records))
             if limit <= 0:
+                #All records processed, exit while loop
                 break
 
             params = {"limit": limit, "offset": offset, "format": "json"}
@@ -66,18 +74,22 @@ def fetch_all(
                     f"GET {resp.url} failed: STATUS CODE {resp.status_code}\n {resp.text}"
                 )
 
-            print(resp.text)
-            break
+            payload = resp.json()
+            records = extract_records(payload)
+            print(records)
+            print("length of records: "  + str(len(records)))
 
 
 
     return records
 
 if __name__ == "__main__":
-    # Manual smoke test — run `python -m src.fdic_client` directly once
-    # fetch_all has a body. Keep max_records tiny until you trust the shape.
+    """
+        Manual smoke test — run `python -m src.fdic_client` directly once fetch_all has a body. 
+        Keep max_records tiny until you trust the shape.
+    """
     #records = fetch_all("institutions", filters="STALP:MD", max_records=5)
-    fetch_all("institutions", filters="STALP:MD", max_records=5)
+    fetch_all("institutions", filters="STALP:MD", max_records=2)
     #print(f"Got {len(records)} records")
     #for r in records:
     #    print(r)
