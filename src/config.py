@@ -15,7 +15,7 @@ ACTIVE_ONLY = True
 YEARS_OF_HISTORY = 5
 
 #Page size placeholder for API calls. API DOC states default is 10, Maximum is 10,000
-PAGE_SIZE = 100
+PAGE_SIZE = 5
 
 #Models for each API call. 
 INSTITUTION_FIELDS = [

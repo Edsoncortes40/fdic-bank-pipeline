@@ -18,8 +18,7 @@ from config import API_BASE_URL, PAGE_SIZE
 
 
 class FDICClientError(RuntimeError):
-    """Raised when a request fails, or returns something we don't know
-    how to parse."""
+    """Raised when a request fails, or returns something that can't be parsed."""
     pass
 
 def extract_records(payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -29,7 +28,20 @@ def extract_records(payload: dict[str, Any]) -> list[dict[str, Any]]:
             return [record["data"] for record in data]
         else:
             return []
- 
+
+def extract_total(payload: dict[str, Any]) -> int | None:
+    if isinstance(payload, dict):
+        metadata = payload.get("meta", {})
+        total = metadata.get("total")
+        if total is not None:
+            return total
+    else:
+        print(f"payload is of type: {type(payload)}")
+
+
+    print("total not found!")
+    return None
+
 
 def fetch_all(
     endpoint: str,
@@ -75,9 +87,24 @@ def fetch_all(
                 )
 
             payload = resp.json()
-            records = extract_records(payload)
-            print(records)
-            print("length of records: "  + str(len(records)))
+            page = extract_records(payload)
+            if not page:
+                print("empty page returned!")
+                break
+            print(page)
+            print("length of records: "  + str(len(page)))
+            records.extend(page)
+            offset += len(page)
+
+            total = extract_total(payload)
+            if total is not None:
+                print(f"The page total is: {total}")
+            if total is None or offset >= total:
+                break
+
+    print(f"total records returned: {len(records)}")
+    return records
+
 
 
 
@@ -89,7 +116,7 @@ if __name__ == "__main__":
         Keep max_records tiny until you trust the shape.
     """
     #records = fetch_all("institutions", filters="STALP:MD", max_records=5)
-    fetch_all("institutions", filters="STALP:MD", max_records=2)
+    fetch_all(endpoint="institutions", filters="STALP:MD", max_records=10)
     #print(f"Got {len(records)} records")
     #for r in records:
     #    print(r)
