@@ -98,7 +98,7 @@ def fetch_all(
 
             total = extract_total(payload)
             if total is not None:
-                print(f"The page total is: {total}")
+                print(f"The meta total is: {total}")
             if total is None or offset >= total:
                 break
 
@@ -106,9 +106,6 @@ def fetch_all(
     return records
 
 
-
-
-    return records
 
 if __name__ == "__main__":
     """
