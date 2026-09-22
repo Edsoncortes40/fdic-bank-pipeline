@@ -8,12 +8,13 @@ import os
 from fdic_client import fetch_all
 from config import (
     ACTIVE_ONLY,
-    STATE,
+    STATES,
     INSTITUTION_FIELDS,
 )
 
 def build_filters() -> str:
-    parts = [f"STALP:{STATE}"]
+    states_string = " OR ".join(STATES)
+    parts = [f"STALP:({states_string})"]
     if ACTIVE_ONLY:
         parts.append("ACTIVE:1")
     return " AND ".join(parts)

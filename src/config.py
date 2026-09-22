@@ -5,8 +5,8 @@
 #FDIC API URL where data will be pulled from
 API_BASE_URL = "https://api.fdic.gov/banks"
 
-#The scope of this project only covers Banks in Maryland, for now
-STATE = "MD"
+#The scope of this project covers the DMV area, including Maryland, Virginia and Washington DC.
+STATES = ["MD", "VA", "DC"]
 
 #Only include institutions that are currently open. We don't need info on closed institutions.
 ACTIVE_ONLY = True
