@@ -71,36 +71,36 @@ def fetch_all(
                 #All records processed, exit while loop
                 break
 
-            params = {"limit": limit, "offset": offset, "format": "json"}
-            if filters:
-                params["filters"] = filters
-            if fields:
-                params["fields"] = ",".join(fields)
-            if sort_by:
-                params["sort_by"] = sort_by
+        params = {"limit": limit, "offset": offset, "format": "json"}
+        if filters:
+            params["filters"] = filters
+        if fields:
+            params["fields"] = ",".join(fields)
+        if sort_by:
+            params["sort_by"] = sort_by
 
-            resp = requests.get(url, params=params, timeout=30)
-            #Raise error if response returns unsuccessful code
-            if resp.status_code != 200:
-                raise FDICClientError(
-                    f"GET {resp.url} failed: STATUS CODE {resp.status_code}\n {resp.text}"
-                )
+        resp = requests.get(url, params=params, timeout=30)
+        #Raise error if response returns unsuccessful code
+        if resp.status_code != 200:
+            raise FDICClientError(
+                f"GET {resp.url} failed: STATUS CODE {resp.status_code}\n {resp.text}"
+            )
 
-            payload = resp.json()
-            page = extract_records(payload)
-            if not page:
-                print("empty page returned!")
-                break
-            print(page)
-            print("length of records: "  + str(len(page)))
-            records.extend(page)
-            offset += len(page)
+        payload = resp.json()
+        page = extract_records(payload)
+        if not page:
+            print("empty page returned!")
+            break
+        print(page)
+        print("length of records: "  + str(len(page)))
+        records.extend(page)
+        offset += len(page)
 
-            total = extract_total(payload)
-            if total is not None:
-                print(f"The meta total is: {total}")
-            if total is None or offset >= total:
-                break
+        total = extract_total(payload)
+        if total is not None:
+            print(f"The meta total is: {total}")
+        if total is None or offset >= total:
+            break
 
     print(f"total records returned: {len(records)}")
     return records

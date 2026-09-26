@@ -17,6 +17,12 @@ YEARS_OF_HISTORY = 5
 #Page size placeholder for API calls. API DOC states default is 10, Maximum is 10,000
 PAGE_SIZE = 5
 
+# Path name for the raw data directory
+RAW_DATA_DIR = "data/raw"
+
+# Path name for the processed data directory
+PROCESSED_DATA_DIR = "data/processed"
+
 #Models for each API call. 
 INSTITUTION_FIELDS = [
     "CERT",     # FDIC certificate number — primary key across all endpoints
