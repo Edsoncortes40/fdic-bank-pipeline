@@ -91,14 +91,14 @@ def fetch_all(
         if not page:
             print("empty page returned!")
             break
-        print(page)
-        print("length of records: "  + str(len(page)))
+        #print(page)
+       # print("length of records: "  + str(len(page)))
         records.extend(page)
         offset += len(page)
 
         total = extract_total(payload)
-        if total is not None:
-            print(f"The meta total is: {total}")
+        #if total is not None:
+            #print(f"The meta total is: {total}")
         if total is None or offset >= total:
             break
 

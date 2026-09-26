@@ -44,8 +44,8 @@ def main(limit: int | None = None) -> None:
     os.makedirs(RAW_DATA_DIR, exist_ok=True)
     suffix = "_sample" if limit is not None else ""
     states_string = "_".join(STATES).lower()
-    raw_path = os.path.join(RAW_DATA_DIR, f"institutions_{states_string}{suffix}") #why use os.join and not just a string concat?
-    print(raw_path)
+    raw_path = os.path.join(RAW_DATA_DIR, f"institutions_{states_string}{suffix}.json") #why use os.join and not just a string concat?
+    #print(raw_path)
 
     with open(raw_path, "w") as f:
         json.dump(
@@ -58,8 +58,15 @@ def main(limit: int | None = None) -> None:
             f, 
             indent=2,
         )
+
         print(f"saved json to {raw_path}")
 
+        df = pd.DataFrame(records)
+        csv_path = os.path.join(RAW_DATA_DIR, f"institutions_{states_string}{suffix}.csv")
+        df.to_csv(csv_path, index=False)
+        print(f"saved csv to {csv_path}")
+        print("first few rows:")
+        print(df.head())
 
 
 if __name__ == "__main__":
