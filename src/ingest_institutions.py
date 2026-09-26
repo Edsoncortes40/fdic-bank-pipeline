@@ -6,7 +6,7 @@ import json
 import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
-#import pandas as pd
+import pandas as pd
 from fdic_client import fetch_all
 from config import (
     ACTIVE_ONLY,
