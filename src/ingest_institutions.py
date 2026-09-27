@@ -2,6 +2,7 @@
     Pull the roster of FDIC-insured institutions headquartered in the
     configured state and save it as raw JSON (source of truth) and a quick CSV
 """
+
 import json
 import os
 from datetime import datetime
@@ -70,4 +71,4 @@ def main(limit: int | None = None) -> None:
 
 
 if __name__ == "__main__":
-    main(20)
+    main()
