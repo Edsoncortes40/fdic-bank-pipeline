@@ -51,7 +51,7 @@ def main(limit: int | None = None) -> None:
     with open(raw_path, "w") as f:
         json.dump(
             {
-                "fetched_at (EST)" : datetime.now(ZoneInfo("America/New_York")).isoformat(), 
+                "fetched_at (EST)" : datetime.now(ZoneInfo("America/New_York")).isoformat(sep=" "), 
                 "filters" : filters,
                 "record_count": len(records),
                 "records": records,
