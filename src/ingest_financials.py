@@ -89,7 +89,14 @@ def main(limit: int | None = None):
         )
 
     print(f"saved json to {raw_path}")
-        
+
+    if all_records:
+        df = pd.DataFrame(all_records)
+        csv_path = os.path.join(RAW_DATA_DIR, f"financials_{states_string}{suffix}.csv")
+        df.to_csv(csv_path, index=False)
+        print(f"Saved csv to {csv_path}")
+    if failed_certs:
+        print(f"{len(failed_certs)} institutions failed to load: \n{failed_certs}")
 
 
 
