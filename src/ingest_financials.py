@@ -100,7 +100,6 @@ def main(limit: int | None = None):
 
 
 
-
-
 if __name__ == "__main__":
+    #Test by running python3 src/ingest_financials.py
     main()
