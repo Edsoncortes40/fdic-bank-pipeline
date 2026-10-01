@@ -11,7 +11,7 @@ def load_raw(name: str) -> pd.DataFrame:
     if not os.path.exists(path):
         raise FileNotFoundError(f"{path} not found! - Run the matching ingest script first!")
     
-    print(path)
+    #print(path)
 
     with open(path) as f:
         payload = json.load(f)
@@ -21,10 +21,24 @@ def load_raw(name: str) -> pd.DataFrame:
 
 def main():
     institutions = load_raw("institutions")
-    print(institutions.head())
+    #print(institutions.head())
 
     financials = load_raw("financials")
-    print(financials.head())
+    #print(financials.head())
+    
+    # Exlude data already included in financials data, since dropping columns, ensure no duplicates are present
+    institutions_meta = institutions[["CERT", "NAME", "CITY", "STALP", "BKCLASS"]].drop_duplicates()
+    #left join on institutions and financials DataFrames on "CERT" column
+    panel = financials.merge(institutions_meta, on="CERT", how="left")
+
+    #convert REPDTE to date format that pandas can use, errors="coerce" will assign NaT in case conversion can't be made
+    panel["REPDTE"] = pd.to_datetime(panel["REPDTE"], format="%Y%m%d", errors="coerce")
+    #Sort by institution and REPDTE in Ascending order
+    panel = panel.sort_values(by=["CERT", "REPDTE"], ascending=True)
+
+    print(panel.head())
+
+
 
 
 if __name__ == "__main__":
