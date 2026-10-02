@@ -98,6 +98,7 @@ def main(limit: int | None = None):
     if failed_certs:
         print(f"{len(failed_certs)} institutions failed to load: \n{failed_certs}")
 
+    
 
 
 if __name__ == "__main__":

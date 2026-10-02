@@ -28,15 +28,21 @@ def main():
     
     # Exlude data already included in financials data, since dropping columns, ensure no duplicates are present
     institutions_meta = institutions[["CERT", "NAME", "CITY", "STALP", "BKCLASS"]].drop_duplicates()
-    #left join on institutions and financials DataFrames on "CERT" column
+    # Left join on institutions and financials DataFrames on "CERT" column
     panel = financials.merge(institutions_meta, on="CERT", how="left")
 
-    #convert REPDTE to date format that pandas can use, errors="coerce" will assign NaT in case conversion can't be made
+    # Convert REPDTE to date format that pandas can use, errors="coerce" will assign NaT in case conversion can't be made
     panel["REPDTE"] = pd.to_datetime(panel["REPDTE"], format="%Y%m%d", errors="coerce")
     #Sort by institution and REPDTE in Ascending order
     panel = panel.sort_values(by=["CERT", "REPDTE"], ascending=True)
 
-    print(panel.head())
+    # Groups rows by CERT (institution) and calculates the percentage change quarter-over-quarter for deposits in a new "dep_growth_qoq" column
+    panel["dep_growth_qoq"] = panel.groupby("CERT")["DEP"].pct_change()
+
+    # Groups rows by CERT (institution) and calculates the percentage change quarter-over-quarter for deposits in a new "dep_growth_qoq" column
+    panel["asset_growth_qoq"] = panel.groupby("CERT")["ASSET"].pct_change()
+    
+    print(panel)
 
 
 
