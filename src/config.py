@@ -2,11 +2,22 @@
     Configurations for project!
 """
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
 #FDIC API URL where data will be pulled from
 API_BASE_URL = "https://api.fdic.gov/banks"
 
+FDIC_API_KEY = os.getenv("FDIC_API_KEY")
+if not FDIC_API_KEY:
+    raise RuntimeError("FDIC_API_KEY is not set - make sure key is set in .env file!")
+
+
 #The scope of this project covers the DMV area, including Maryland, Virginia and Washington DC.
 STATES = ["MD", "VA", "DC"]
+STATES_STRING = "_".join(STATES).lower()
 
 #Only include institutions that are currently open. We don't need info on closed institutions.
 ACTIVE_ONLY = True
@@ -15,7 +26,7 @@ ACTIVE_ONLY = True
 YEARS_OF_HISTORY = 5
 
 #Page size placeholder for API calls. API DOC states default is 10, Maximum is 10,000
-PAGE_SIZE = 5
+PAGE_SIZE = 100
 
 # Path name for the raw data directory
 RAW_DATA_DIR = "data/raw"

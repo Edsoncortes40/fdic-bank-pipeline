@@ -11,14 +11,15 @@ import pandas as pd
 from fdic_client import fetch_all
 from config import (
     ACTIVE_ONLY,
+    STATES_STRING,
     STATES,
     INSTITUTION_FIELDS,
     RAW_DATA_DIR
 )
 
 def build_filters() -> str:
-    states_string = " OR ".join(STATES)
-    parts = [f"STALP:({states_string})"]
+    states_qry_str = " OR ".join(STATES)
+    parts = [f"STALP:({states_qry_str})"]
     if ACTIVE_ONLY:
         parts.append("ACTIVE:1")
     return " AND ".join(parts)
@@ -44,8 +45,7 @@ def main(limit: int | None = None) -> None:
 
     os.makedirs(RAW_DATA_DIR, exist_ok=True)
     suffix = "_sample" if limit is not None else ""
-    states_string = "_".join(STATES).lower()
-    raw_path = os.path.join(RAW_DATA_DIR, f"institutions_{states_string}{suffix}.json") #why use os.join and not just a string concat?
+    raw_path = os.path.join(RAW_DATA_DIR, f"institutions_{STATES_STRING}{suffix}.json") #why use os.join and not just a string concat?
     #print(raw_path)
 
     with open(raw_path, "w") as f:
@@ -63,7 +63,7 @@ def main(limit: int | None = None) -> None:
         print(f"saved json to {raw_path}")
 
         df = pd.DataFrame(records)
-        csv_path = os.path.join(RAW_DATA_DIR, f"institutions_{states_string}{suffix}.csv")
+        csv_path = os.path.join(RAW_DATA_DIR, f"institutions_{STATES_STRING}{suffix}.csv")
         df.to_csv(csv_path, index=False)
         print(f"saved csv to {csv_path}")
         print("first few rows:")

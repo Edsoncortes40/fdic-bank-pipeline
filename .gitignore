@@ -1,0 +1,6 @@
+# Ignore all files in the data directories
+data/raw/*
+data/processed/*
+
+.env
+venv

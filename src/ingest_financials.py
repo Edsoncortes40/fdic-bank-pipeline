@@ -15,7 +15,7 @@ import pandas as pd
 from fdic_client import fetch_all, FDICClientError
 from config import (
     FINANCIAL_FIELDS,
-    STATES,
+    STATES_STRING,
     RAW_DATA_DIR,
     YEARS_OF_HISTORY,
 )
@@ -23,8 +23,7 @@ from config import (
 
 def load_certs(limit: int | None = None) -> list[str]:
     certs = []
-    states_string = "_".join(STATES).lower()
-    path = os.path.join(RAW_DATA_DIR, f"institutions_{states_string}.json")
+    path = os.path.join(RAW_DATA_DIR, f"institutions_{STATES_STRING}.json")
     if not os.path.exists(path):
         raise FileNotFoundError(
             f"File was not found! Run ingest_institutions.py first, make sure there is not limit on ingest_institutions.py"
@@ -70,9 +69,8 @@ def main(limit: int | None = None):
             print(f"CERT #{i}: CERT {cert} FAILED. - {e}")
 
     os.makedirs(RAW_DATA_DIR, exist_ok=True)
-    states_string = "_".join(STATES).lower()
     suffix = "_sample" if limit else ""
-    raw_path = os.path.join(RAW_DATA_DIR, f"financials_{states_string}{suffix}.json")
+    raw_path = os.path.join(RAW_DATA_DIR, f"financials_{STATES_STRING}{suffix}.json")
 
     with open(raw_path, "w") as f:
         json.dump(
@@ -92,7 +90,7 @@ def main(limit: int | None = None):
 
     if all_records:
         df = pd.DataFrame(all_records)
-        csv_path = os.path.join(RAW_DATA_DIR, f"financials_{states_string}{suffix}.csv")
+        csv_path = os.path.join(RAW_DATA_DIR, f"financials_{STATES_STRING}{suffix}.csv")
         df.to_csv(csv_path, index=False)
         print(f"Saved csv to {csv_path}")
     if failed_certs:

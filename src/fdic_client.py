@@ -14,7 +14,7 @@ import requests
 
 # Assumes API_BASE_URL and PAGE_SIZE live in your config.py per the
 # outline — rename the import if you called them something else.
-from config import API_BASE_URL, PAGE_SIZE
+from config import API_BASE_URL, PAGE_SIZE, FDIC_API_KEY
 
 
 class FDICClientError(RuntimeError):
@@ -71,7 +71,7 @@ def fetch_all(
                 #All records processed, exit while loop
                 break
 
-        params = {"limit": limit, "offset": offset, "format": "json"}
+        params = {"api_key": FDIC_API_KEY, "limit": limit, "offset": offset, "format": "json"}
         if filters:
             params["filters"] = filters
         if fields:
@@ -80,6 +80,7 @@ def fetch_all(
             params["sort_by"] = sort_by
 
         resp = requests.get(url, params=params, timeout=30)
+        print(resp.url)
         #Raise error if response returns unsuccessful code
         if resp.status_code != 200:
             raise FDICClientError(
@@ -113,7 +114,7 @@ if __name__ == "__main__":
         Keep max_records tiny until you trust the shape.
     """
     #records = fetch_all("institutions", filters="STALP:MD", max_records=5)
-    fetch_all(endpoint="institutions", filters="STALP:MD", max_records=10)
+    fetch_all(endpoint="institutions", filters="STALP:MD")
     #print(f"Got {len(records)} records")
     #for r in records:
     #    print(r)

@@ -2,11 +2,10 @@ import json
 import os
 import pandas as pd
 
-from config import PROCESSED_DATA_DIR, RAW_DATA_DIR, STATES
+from config import PROCESSED_DATA_DIR, RAW_DATA_DIR, STATES_STRING
 
 def load_raw(name: str) -> pd.DataFrame:
-    states_string = "_".join(STATES).lower()
-    path = os.path.join(RAW_DATA_DIR, f"{name}_{states_string}.json")
+    path = os.path.join(RAW_DATA_DIR, f"{name}_{STATES_STRING}.json")
 
     if not os.path.exists(path):
         raise FileNotFoundError(f"{path} not found! - Run the matching ingest script first!")
@@ -41,6 +40,11 @@ def main():
 
     # Groups rows by CERT (institution) and calculates the percentage change quarter-over-quarter for deposits in a new "dep_growth_qoq" column
     panel["asset_growth_qoq"] = panel.groupby("CERT")["ASSET"].pct_change()
+
+
+    os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
+    csv_path = os.path.join(PROCESSED_DATA_DIR, f"bank_health_panel_{STATES_STRING}")
+
     
     print(panel)
 
