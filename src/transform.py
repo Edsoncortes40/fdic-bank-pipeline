@@ -42,12 +42,13 @@ def main():
     panel["asset_growth_qoq"] = panel.groupby("CERT")["ASSET"].pct_change()
 
 
-    os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
-    csv_path = os.path.join(PROCESSED_DATA_DIR, f"bank_health_panel_{STATES_STRING}")
-
-    
     print(panel)
 
+    os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
+    csv_path = os.path.join(PROCESSED_DATA_DIR, f"bank_health_panel_{STATES_STRING}.csv")
+    parquet_path = os.path.join(PROCESSED_DATA_DIR, f"bank_health_panel_{STATES_STRING}.parquet")
+    panel.to_csv(csv_path, index=False)
+    panel.to_parquet(parquet_path, index=False)
 
 
 
