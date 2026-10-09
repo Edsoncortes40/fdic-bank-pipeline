@@ -7,6 +7,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+# AWS Cconstants
+RAW_DATA_BUCKET_NAME = ""
+PROCESSED_DATA_BUCKET_NAME = ""
+
+
 #FDIC API URL where data will be pulled from
 API_BASE_URL = "https://api.fdic.gov/banks"
 

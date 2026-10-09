@@ -1,8 +1,22 @@
 import json
 import os
 import pandas as pd
+import boto3
 
-from config import PROCESSED_DATA_DIR, RAW_DATA_DIR, STATES_STRING
+from config import PROCESSED_DATA_DIR, RAW_DATA_DIR, STATES_STRING, PROCESSED_DATA_BUCKET_NAME
+
+def upload_to_s3(file_path, bucket_name):
+    file_name = os.path.basename(file_path)
+
+    # AWS S3 upload setup
+    session = boto3.Session(profile_name='Edsons-laptop')
+    s3_client = session.client('s3')
+
+    #upload files
+    print(f"Uploading {file_name} to S3 bucket named {bucket_name}")
+    s3_client.upload_file(file_path, bucket_name, file_name)
+
+
 
 def load_raw(name: str) -> pd.DataFrame:
     path = os.path.join(RAW_DATA_DIR, f"{name}_{STATES_STRING}.json")
@@ -49,6 +63,10 @@ def main():
     parquet_path = os.path.join(PROCESSED_DATA_DIR, f"bank_health_panel_{STATES_STRING}.parquet")
     panel.to_csv(csv_path, index=False)
     panel.to_parquet(parquet_path, index=False)
+
+    #Upload the files to s3
+    upload_to_s3(csv_path, PROCESSED_DATA_BUCKET_NAME)
+    upload_to_s3(parquet_path, PROCESSED_DATA_BUCKET_NAME)
 
 
 
